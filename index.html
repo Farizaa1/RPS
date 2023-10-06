@@ -1,0 +1,184 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rock-Paper-Scissors Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .move-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .address-input {
+            margin-bottom: 20px;
+        }
+        .game-history-item {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rock-Paper-Scissors Game</h1>
+        <div class="address-input">
+            <label for="playerAddress">Your Ethereum Address:</label>
+            <input type="text" id="playerAddress" placeholder="Enter your Ethereum address">
+        </div>
+        <div class="move-selection">
+            <label for="moveSelection">Select your move:</label>
+            <select id="moveSelection">
+                <option value="1">Rock</option>
+                <option value="2">Paper</option>
+                <option value="3">Scissors</option>
+            </select>
+        </div>
+        <button onclick="playGame()">Play</button>
+        <div>
+            <h2>Game History</h2>
+            <div class="game-history" id="gameHistory"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        async function playGame() {
+            const selectedMove = document.getElementById('moveSelection').value;
+            const playerAddress = document.getElementById('playerAddress').value;
+        
+            // Replace with the actual address of your deployed smart contract
+            const contractAddress = '0xd9145CCE52D386f254917e481eB44e9943F39138';
+        
+            // Replace with the actual ABI of your smart contract
+            const abi = 
+            [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "betAmount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "games",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "player",
+				"type": "address"
+			},
+			{
+				"internalType": "enum RockPaperScissors.Move",
+				"name": "playerMove",
+				"type": "uint8"
+			},
+			{
+				"internalType": "enum RockPaperScissors.Move",
+				"name": "contractMove",
+				"type": "uint8"
+			},
+			{
+				"internalType": "enum RockPaperScissors.GameState",
+				"name": "state",
+				"type": "uint8"
+			},
+			{
+				"internalType": "uint256",
+				"name": "reward",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "enum RockPaperScissors.Move",
+				"name": "_playerMove",
+				"type": "uint8"
+			}
+		],
+		"name": "play",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	}
+];
+                // ABI functions here
+            
+        
+            const contract = new ethers.Contract(contractAddress, abi, wallet);
+        
+            // Call the play function in the smart contract
+            try {
+                const transaction = await contract.play(selectedMove, { value: betAmount });
+                await transaction.wait();
+        
+                // Update UI with game result including player's address
+                const gameResult = await contract.games(contract.games.length - 1);
+                const resultText = `Player Address: ${playerAddress}, Game Result: ${getResultText(gameResult.state)}`;
+                displayGameResult(resultText);
+            } catch (error) {
+                console.error('Error playing the game:', error);
+            }
+        }
+        function getResultText(result) {
+            if (result == 1) return 'You win!';
+            if (result == 2) return 'You lose!';
+            return 'It\'s a draw!';
+        }
+
+        function displayGameResult(resultText) {
+            const gameHistoryDiv = document.getElementById('gameHistory');
+            const resultDiv = document.createElement('div');
+            resultDiv.classList.add('game-history-item');
+            resultDiv.textContent = resultText;
+            gameHistoryDiv.appendChild(resultDiv);
+        }
+
+        // Other functions as before
+    </script>
+</body>
+</html>
