@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Rock-Paper-Scissors Game</title>
+    <title>Rock-Paper-Scissors</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,10 +56,8 @@
             const selectedMove = document.getElementById('moveSelection').value;
             const playerAddress = document.getElementById('playerAddress').value;
         
-            // Replace with the actual address of your deployed smart contract
             const contractAddress = '0xd9145CCE52D386f254917e481eB44e9943F39138';
         
-            // Replace with the actual ABI of your smart contract
             const abi = [
             [
 	{
@@ -147,17 +145,14 @@
 	}
 ]
 		    ];
-                // ABI functions here
             
         
             const contract = new ethers.Contract(contractAddress, abi, wallet);
         
-            // Call the play function in the smart contract
             try {
                 const transaction = await contract.play(selectedMove, { value: betAmount });
                 await transaction.wait();
         
-                // Update UI with game result including player's address
                 const gameResult = await contract.games(contract.games.length - 1);
                 const resultText = `Player Address: ${playerAddress}, Game Result: ${getResultText(gameResult.state)}`;
                 displayGameResult(resultText);
@@ -179,7 +174,6 @@
             gameHistoryDiv.appendChild(resultDiv);
         }
 
-        // Other functions as before
     </script>
 </body>
 </html>
