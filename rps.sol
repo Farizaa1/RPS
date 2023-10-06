@@ -66,10 +66,10 @@ contract RockPaperScissors {
 
     function calculateReward(GameState _result) internal view returns (uint256) {
         if (_result == GameState.Win) {
-            return betAmount * 2;  // Player wins and receives a reward of 2 times the bet amount
+            return betAmount * 2;  
         } else if (_result == GameState.Draw) {
-            return betAmount;  // Player gets back the bet amount in case of a draw
+            return betAmount;  
         }
-        return 0;  // Player loses and receives no reward
+        return 0;  
     }
 }
